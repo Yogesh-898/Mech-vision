@@ -7,7 +7,7 @@ import pandas as pd
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="StructSolve — Beam Stress Analyzer",
+    page_title="Mech Vision — Navy Edition",
     page_icon="🏗️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -16,120 +16,273 @@ st.set_page_config(
 # ─── Custom CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Rajdhani:wght@500;600;700&family=Cinzel+Decorative:wght@400;700&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-}
+/* ══════════════════════════════════════════
+   MECH VISION v6 — DEEP NAVY EDITORIAL
+   Professional Engineering Suite Aesthetic
+   ══════════════════════════════════════════ */
+
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+
+/* ── Background: fine dot grid + structural lines + atmospheric glows ── */
 .stApp {
-    background: #0d1117;
+  background-color: #080d14;
+  background-image:
+    radial-gradient(circle, rgba(180,198,220,0.09) 1px, transparent 1px),
+    linear-gradient(rgba(180,198,220,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180,198,220,0.025) 1px, transparent 1px),
+    /* ── backlighting: bright centre bloom ── */
+    radial-gradient(ellipse 85% 55% at 50% 20%,  rgba(20,90,200,0.22)  0%, rgba(10,50,130,0.10) 45%, transparent 75%),
+    /* ── backlighting: deep left edge ── */
+    radial-gradient(ellipse 40% 70% at 0%   50%,  rgba(10,40,120,0.14)  0%, transparent 65%),
+    /* ── backlighting: deep right edge ── */
+    radial-gradient(ellipse 40% 70% at 100% 50%,  rgba(10,40,120,0.12)  0%, transparent 65%),
+    /* ── backlighting: bottom vignette ── */
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(4,12,30,0.6)     0%, transparent 70%);
+  background-size: 28px 28px, 112px 112px, 112px 112px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
 }
+
+/* ── Sidebar — glassmorphism panel ── */
 section[data-testid="stSidebar"] {
-    background: #161b22;
-    border-right: 1px solid #30363d;
+  background: linear-gradient(180deg, #050a10 0%, #070c16 100%);
+  border-right: 1px solid rgba(180,198,220,0.10);
+  box-shadow: 4px 0 24px rgba(0,0,0,0.5);
 }
-section[data-testid="stSidebar"] * {
-    color: #e6edf3 !important;
-}
+section[data-testid="stSidebar"] * { color: #8aa0ba !important; }
+
+/* ── Metric cards — glassmorphism engineering panels ── */
 .metric-card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 10px;
-    padding: 16px 20px;
-    text-align: center;
-    transition: border-color 0.2s;
+  background: linear-gradient(135deg, rgba(13,20,32,0.85), rgba(8,13,20,0.92));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(180,198,220,0.08);
+  border-top: 2px solid rgba(180,198,220,0.22);
+  border-radius: 3px;
+  padding: 20px 16px 16px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
-.metric-card:hover { border-color: #388bfd; }
+.metric-card:hover {
+  background: linear-gradient(135deg, rgba(17,26,44,0.9), rgba(11,18,30,0.95));
+  border-top-color: rgba(180,198,220,0.5);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+/* Safety card state variants — applied inline via style attr */
+.metric-card-safe  { border-top-color: rgba(90,184,160,0.6) !important; }
+.metric-card-warn  { border-top-color: rgba(180,160,100,0.6) !important; }
+.metric-card-fail  { border-top-color: rgba(176,96,112,0.7) !important; box-shadow: 0 0 20px rgba(176,96,112,0.1) !important; }
+
 .metric-label {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #8b949e;
-    margin-bottom: 4px;
-    font-family: 'DM Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(140,165,190,0.55);
+  margin-bottom: 10px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
 }
 .metric-value {
-    font-size: 22px;
-    font-weight: 600;
-    color: #e6edf3;
-    font-family: 'DM Mono', monospace;
+  font-size: 30px;
+  font-weight: 600;
+  color: #dce8f5;
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1;
+  letter-spacing: 0.02em;
 }
 .metric-unit {
-    font-size: 12px;
-    color: #8b949e;
-    font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  color: rgba(120,145,170,0.45);
+  font-family: 'DM Mono', monospace;
+  margin-top: 6px;
+  letter-spacing: 0.08em;
 }
+
+/* ── Badges ── */
 .safe-badge {
-    display:inline-block;
-    background: #1a3b2a;
-    color: #3fb950;
-    border: 1px solid #238636;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(90,184,160,0.06);
+  color: #5ab8a0; border: 1px solid rgba(80,180,160,0.28);
+  border-radius: 2px; padding: 5px 14px;
+  font-size: 9.5px; font-weight: 600;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase;
 }
 .warn-badge {
-    display:inline-block;
-    background: #3b2a1a;
-    color: #d29922;
-    border: 1px solid #9e6a03;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(180,160,100,0.06);
+  color: #b4a060; border: 1px solid rgba(180,160,100,0.28);
+  border-radius: 2px; padding: 5px 14px;
+  font-size: 9.5px; font-weight: 600;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase;
 }
 .fail-badge {
-    display:inline-block;
-    background: #3b1a1a;
-    color: #f85149;
-    border: 1px solid #da3633;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(176,96,112,0.08);
+  color: #b06070; border: 1px solid rgba(176,96,112,0.3);
+  border-radius: 2px; padding: 5px 14px;
+  font-size: 9.5px; font-weight: 600;
+  font-family: 'DM Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase;
+  animation: failPulse 2.5s ease infinite;
 }
-.header-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: #e6edf3;
-    letter-spacing: -0.5px;
+@keyframes failPulse {
+  0%,100%{ box-shadow: 0 0 0 rgba(176,96,112,0); }
+  50%    { box-shadow: 0 0 12px rgba(176,96,112,0.18); }
 }
-.header-sub {
-    font-size: 13px;
-    color: #8b949e;
-    font-family: 'DM Mono', monospace;
+
+/* ── Tabs — clean editorial underline ── */
+.stTabs [data-baseweb="tab-list"] {
+  background: transparent;
+  border-bottom: 1px solid rgba(180,198,220,0.08);
+  border-radius: 0; padding: 0; gap: 0;
 }
-h1, h2, h3, h4 { color: #e6edf3 !important; }
-p, label { color: #c9d1d9 !important; }
-hr { border-color: #30363d !important; }
-.stSelectbox label, .stSlider label, .stNumberInput label,
-.stTextInput label, .stRadio label { color: #8b949e !important; font-size: 12px !important; }
+.stTabs [data-baseweb="tab"] {
+  border-radius: 0 !important;
+  color: rgba(140,165,190,0.45) !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 10px !important; font-weight: 500 !important;
+  padding: 10px 20px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  transition: all 0.2s !important;
+  border-bottom: 2px solid transparent !important;
+}
+.stTabs [data-baseweb="tab"]:hover {
+  color: rgba(220,232,245,0.7) !important;
+  background: rgba(180,198,220,0.03) !important;
+}
+.stTabs [aria-selected="true"] {
+  background: transparent !important;
+  color: #dce8f5 !important;
+  border-bottom: 2px solid rgba(180,198,220,0.65) !important;
+  font-weight: 600 !important;
+}
+
+/* ── Expanders ── */
 div[data-testid="stExpander"] {
-    border: 1px solid #30363d !important;
-    border-radius: 8px !important;
-    background: #161b22 !important;
+  background: linear-gradient(135deg, rgba(8,13,20,0.9), rgba(12,18,26,0.85)) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(180,198,220,0.06) !important;
+  border-left: 2px solid rgba(180,198,220,0.18) !important;
+  border-radius: 3px !important;
+  transition: border-left-color 0.3s !important;
 }
-.stDataFrame { background: #161b22; }
+div[data-testid="stExpander"]:hover { border-left-color: rgba(180,198,220,0.42) !important; }
+div[data-testid="stExpander"] summary {
+  font-family: 'DM Mono', monospace !important;
+  font-size: 10px !important; letter-spacing: 0.15em !important;
+  color: rgba(140,165,190,0.6) !important;
+  text-transform: uppercase !important; font-weight: 500 !important;
+}
+
+/* ── Inputs — glassmorphism ── */
+.stSlider [data-baseweb="slider"] [role="slider"] {
+  background: #b4c6dc !important;
+  box-shadow: 0 0 6px rgba(180,198,220,0.4) !important;
+  border: 2px solid rgba(180,198,220,0.45) !important;
+  width: 14px !important; height: 14px !important;
+  transition: box-shadow 0.2s !important;
+}
+.stSlider [data-baseweb="slider"] [role="slider"]:hover {
+  box-shadow: 0 0 12px rgba(180,198,220,0.7) !important;
+}
+.stSlider [data-baseweb="slider"] [data-testid="stSliderTrackFill"] {
+  background: rgba(180,198,220,0.45) !important;
+}
+div[data-baseweb="select"] > div, div[data-baseweb="input"] > div {
+  background: rgba(8,13,20,0.8) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(180,198,220,0.08) !important;
+  border-radius: 3px !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+div[data-baseweb="select"] > div:hover,
+div[data-baseweb="input"] > div:focus-within {
+  border-color: rgba(180,198,220,0.28) !important;
+  box-shadow: 0 0 0 3px rgba(180,198,220,0.05) !important;
+}
+div[data-baseweb="select"] * { font-family: 'Inter', sans-serif !important; font-size: 13px !important; color: #8aa0ba !important; }
+
+/* ── Primary action button ── */
+.stDownloadButton > button {
+  background: rgba(90,184,160,0.08) !important;
+  color: #5ab8a0 !important;
+  border: 1px solid rgba(80,180,160,0.25) !important;
+  border-radius: 2px !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 10px !important; font-weight: 600 !important;
+  letter-spacing: 0.16em !important; text-transform: uppercase !important;
+  padding: 12px 28px !important; transition: all 0.25s ease !important;
+}
+.stDownloadButton > button:hover {
+  background: rgba(90,184,160,0.14) !important;
+  border-color: rgba(90,184,160,0.45) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3), 0 0 12px rgba(90,184,160,0.1) !important;
+}
+
+/* ── Alerts ── */
+div[data-testid="stAlert"] { border-radius: 2px !important; font-family: 'DM Mono', monospace !important; font-size: 11px !important; }
+div[data-testid="stInfo"] {
+  background: rgba(180,198,220,0.03) !important;
+  border: 1px solid rgba(180,198,220,0.10) !important;
+  border-left: 2px solid rgba(180,198,220,0.38) !important;
+  border-radius: 2px !important;
+}
+
+/* ── Dataframe ── */
+.stDataFrame { border-radius: 3px !important; border: 1px solid rgba(180,198,220,0.06) !important; }
+.stDataFrame th {
+  background: rgba(180,198,220,0.03) !important;
+  font-family: 'DM Mono', monospace !important;
+  font-size: 9px !important; letter-spacing: 0.16em !important;
+  text-transform: uppercase !important; color: rgba(140,165,190,0.5) !important; font-weight: 500 !important;
+}
+.stDataFrame td { font-family: 'Inter', sans-serif !important; font-size: 12.5px !important; color: #8aa0ba !important; }
+
+/* ── Sidebar section labels — left border accent ── */
+.sidebar-section {
+  font-size: 8.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(180,198,220,0.48);
+  font-family: 'DM Mono', monospace; font-weight: 500;
+  padding: 4px 0 3px 10px;
+  border-left: 3px solid rgba(180,198,220,0.25);
+  margin-bottom: 10px;
+}
+
+/* ── Typography ── */
+h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif !important; color: #dce8f5 !important; font-weight: 400 !important; letter-spacing: -0.01em !important; }
+p, label { color: rgba(120,145,170,0.7) !important; }
+hr { border-color: rgba(180,198,220,0.06) !important; }
+.stSelectbox label,.stSlider label,.stNumberInput label,.stTextInput label,.stRadio label {
+  color: rgba(140,165,190,0.5) !important;
+  font-size: 9px !important; letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  font-family: 'DM Mono', monospace !important; font-weight: 500 !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: #080d14; }
+::-webkit-scrollbar-thumb { background: rgba(180,198,220,0.18); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(180,198,220,0.32); }
 </style>
 """, unsafe_allow_html=True)
 
 # ─── Color palette ─────────────────────────────────────────────────────────
 STRESS_CMAP = LinearSegmentedColormap.from_list(
-    "stress", ["#388bfd", "#3fb950", "#e3b341", "#f85149"], N=256
+    "navy",     ["#080d14", "#0d2a5a", "#4a80c0", "#b4c6dc"], N=256
 )
-BG   = "#0d1117"
-SURF = "#161b22"
-BORD = "#30363d"
-TEXT = "#e6edf3"
-MUTE = "#8b949e"
-ACC  = "#388bfd"
-GRN  = "#3fb950"
-RED  = "#f85149"
-YEL  = "#e3b341"
+BG   = "#080d14"
+SURF = "#0d1420"
+BORD = "#142030"
+TEXT = "#dce8f5"
+MUTE = "#3a4e68"
+ACC  = "#b4c6dc"
+GRN  = "#5ab8a0"
+RED  = "#b06070"
+YEL  = "#7a9ec0"
 
 # Module-level lookup tables (single source of truth)
 FY_MAP = {
@@ -195,7 +348,7 @@ def solve_beam(span, loads, support_a, support_b, udl=0, udl_start=0, udl_end=No
         Ma_moment = -(sum(P * x for x, P in loads) + udl_total * udl_arm)
 
     # --- Arrays along beam ---
-    n   = 1000
+    n   = 400
     xs  = np.linspace(0, span, n)
     sfd = np.zeros(n)
     bmd = np.zeros(n)
@@ -204,28 +357,26 @@ def solve_beam(span, loads, support_a, support_b, udl=0, udl_start=0, udl_end=No
     total_load_solver = total_point + udl_total
     sfd_tol = max(1e-6 * abs(total_load_solver), 1e-9)
 
-    for i, x in enumerate(xs):
-        # Both SFD and BMD use strict < — step discontinuity placed AFTER load
-        # coordinate, consistent with FBD left-of-cut convention.
-        V = Ra
-        for xi, Pi in loads:
-            if xi < x:           # was xi <= x (Error 1 fix)
-                V -= Pi
-        if x > udl_start:        # was x >= udl_start (Error 4 fix — consistent with BMD)
-            covered = min(x, udl_end) - udl_start
-            if covered > 0:
-                V -= udl * covered
-        sfd[i] = 0.0 if abs(V) < sfd_tol else V   # proportional clamp (Error 6 fix)
+    # --- Vectorised SFD & BMD using numpy broadcasting (no Python loop) ---
+    # SFD: V(x) = Ra - Σ Pi·[xi < x] - udl·covered(x)
+    sfd = np.full(n, Ra)
+    bmd = Ra * xs + Ma_moment
 
-        M = Ra * x + Ma_moment
-        for xi, Pi in loads:
-            if xi < x:
-                M -= Pi * (x - xi)
-        if x > udl_start:
-            cov = min(x, udl_end) - udl_start
-            if cov > 0:
-                M -= udl * cov * (x - udl_start - cov / 2.0)
-        bmd[i] = M
+    for xi, Pi in loads:
+        mask = xs > xi          # strict < in FBD convention
+        sfd  = np.where(mask, sfd - Pi, sfd)
+        bmd  = np.where(mask, bmd - Pi * (xs - xi), bmd)
+
+    # UDL contribution
+    if udl > 0 and udl_end > udl_start:
+        in_udl   = xs > udl_start
+        covered  = np.where(in_udl, np.minimum(xs, udl_end) - udl_start, 0.0)
+        sfd     -= udl * covered
+        cov_bmd  = np.where(in_udl, np.minimum(xs, udl_end) - udl_start, 0.0)
+        bmd     -= udl * cov_bmd * (xs - udl_start - cov_bmd / 2.0)
+
+    # Apply proportional zero-clamp to SFD
+    sfd = np.where(np.abs(sfd) < sfd_tol, 0.0, sfd)
 
     # bmd_norm: normalised moment [0,1] used for beam colour map.
     # Named explicitly to avoid confusion with actual bending stress (σ = M/Z, in MPa).
@@ -287,7 +438,7 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
     bmd_norm = res["bmd_norm"]
     Ra, Rb   = res["Ra"], res["Rb"]
 
-    fig, ax = plt.subplots(figsize=(11, 3.2))
+    fig, ax = plt.subplots(figsize=(12, 4.0))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(SURF)
 
@@ -295,10 +446,10 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
     beam_h  = 0.22
     beam_hi = beam_y + beam_h
 
-    # Stress-colored beam
-    for i in range(len(xs) - 1):
-        c = STRESS_CMAP(bmd_norm[i])
-        ax.fill_betweenx([beam_y, beam_hi], xs[i], xs[i+1], color=c, linewidth=0)
+    # Stress-colored beam — single imshow instead of 999 fill_betweenx calls
+    img = STRESS_CMAP(bmd_norm).reshape(1, len(bmd_norm), 4)
+    ax.imshow(img, aspect='auto', extent=[xs[0], xs[-1], beam_y, beam_hi],
+              origin='lower', zorder=1)
 
     ax.plot([0, span], [beam_y, beam_y],       color=BORD, lw=1)
     ax.plot([0, span], [beam_hi, beam_hi],     color=BORD, lw=1)
@@ -308,7 +459,8 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
     # UDL
     if udl > 0:
         udl_max_possible = 50.0
-        udl_sc = (udl / udl_max_possible) * 0.4
+        # Proportional scale but with a minimum so arrows are always visible
+        udl_sc = max((udl / udl_max_possible) * 0.4, 0.12)
         ax.fill_between(
             [udl_start, udl_end], beam_hi, beam_hi + udl_sc * 0.7,
             color=ACC, alpha=0.25, linewidth=0
@@ -323,12 +475,17 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
                 f"w = {udl} kN/m", ha="center", fontsize=8, color=ACC, style="italic")
 
     # Point loads
-    arrow_h = 0.5
+    arrow_h = 0.6
     for xi, Pi in loads:
-        ax.annotate("", xy=(xi, beam_hi),
+        # Stem line (always visible regardless of arrowstyle rendering)
+        ax.plot([xi, xi], [beam_hi, beam_hi + arrow_h],
+                color=RED, lw=1.8, solid_capstyle='round')
+        # Arrowhead at beam surface
+        ax.annotate("", xy=(xi, beam_hi + 0.02),
                     xytext=(xi, beam_hi + arrow_h),
-                    arrowprops=dict(arrowstyle="-|>", color=RED, lw=1.5))
-        ax.text(xi, beam_hi + arrow_h + 0.06, f"{Pi} kN",
+                    arrowprops=dict(arrowstyle="-|>", color=RED, lw=1.8,
+                                    mutation_scale=14))
+        ax.text(xi, beam_hi + arrow_h + 0.07, f"{Pi} kN",
                 ha="center", fontsize=8.5, color=RED, fontweight="bold")
 
     # Support symbols
@@ -410,12 +567,12 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
                 ha="center", fontsize=7.5, color=YEL, fontweight="bold")
 
     ax.set_xlim(-0.5, span + 0.5)
-    ax.set_ylim(-0.75, 1.2)
+    ax.set_ylim(-0.75, 1.4)
     ax.set_xlabel("Position along beam (m)", fontsize=9, color=MUTE)
     ax.set_title("BEAM — Stress Distribution", fontsize=10, color=TEXT,
                  fontweight="bold", pad=8, loc="left")
     ax.set_yticks([])
-    ax.grid(axis="x", alpha=0.2, lw=0.5)
+    ax.grid(axis="x", alpha=0.15, lw=0.4, linestyle=":")
     for spine in ax.spines.values():
         spine.set_edgecolor(BORD)
     plt.tight_layout(pad=0.5)
@@ -423,7 +580,7 @@ def plot_beam(span, loads, support_a, support_b, res, udl=0, udl_start=0, udl_en
 
 
 def plot_sfd(xs, sfd, span):
-    fig, ax = plt.subplots(figsize=(11, 2.8))
+    fig, ax = plt.subplots(figsize=(12, 3.2))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(SURF)
     ax.fill_between(xs, 0, sfd, where=(sfd >= 0), color=ACC, alpha=0.4, linewidth=0)
@@ -435,7 +592,7 @@ def plot_sfd(xs, sfd, span):
     ax.set_ylabel("Shear (kN)", fontsize=9, color=MUTE)
     ax.set_title("SHEAR FORCE DIAGRAM", fontsize=10, color=TEXT,
                  fontweight="bold", pad=8, loc="left")
-    ax.grid(alpha=0.2, lw=0.5)
+    ax.grid(alpha=0.15, lw=0.4, linestyle=":")
     for spine in ax.spines.values():
         spine.set_edgecolor(BORD)
     idx_max = np.argmax(np.abs(sfd))
@@ -446,7 +603,7 @@ def plot_sfd(xs, sfd, span):
 
 
 def plot_bmd(xs, bmd, span):
-    fig, ax = plt.subplots(figsize=(11, 2.8))
+    fig, ax = plt.subplots(figsize=(12, 3.2))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(SURF)
     ax.fill_between(xs, 0, bmd, where=(bmd >= 0), color=GRN, alpha=0.4, linewidth=0)
@@ -458,7 +615,7 @@ def plot_bmd(xs, bmd, span):
     ax.set_ylabel("Moment (kN·m)", fontsize=9, color=MUTE)
     ax.set_title("BENDING MOMENT DIAGRAM", fontsize=10, color=TEXT,
                  fontweight="bold", pad=8, loc="left")
-    ax.grid(alpha=0.2, lw=0.5)
+    ax.grid(alpha=0.15, lw=0.4, linestyle=":")
     for spine in ax.spines.values():
         spine.set_edgecolor(BORD)
     idx_max = np.argmax(np.abs(bmd))
@@ -492,14 +649,13 @@ def plot_deflection(xs, bmd, span, E_GPa=200, I_cm4=5000, support_type="simply_s
     E   = E_GPa * 1e9
     I   = I_cm4 * 1e-8
     EI  = E * I
-    M   = -bmd * 1e3   # kN·m → N·m, sign: sagging → downward
+    M   = -bmd * 1e3   # kN·m → N·m
     dx  = xs[1] - xs[0]
 
-    slope = np.zeros(len(xs))
-    defl  = np.zeros(len(xs))
-    for i in range(1, len(xs)):
-        slope[i] = slope[i-1] + 0.5 * (M[i-1]/EI + M[i]/EI) * dx
-        defl[i]  = defl[i-1]  + 0.5 * (slope[i-1] + slope[i]) * dx
+    # Vectorised trapezoidal integration — replaces Python for-loop
+    curvature = M / EI
+    slope = np.concatenate([[0.0], np.cumsum(0.5 * (curvature[:-1] + curvature[1:]) * dx)])
+    defl  = np.concatenate([[0.0], np.cumsum(0.5 * (slope[:-1]     + slope[1:])     * dx)])
 
     if support_type == "cantilever":
         # BC: slope[0]=0 and defl[0]=0 are already satisfied by zero-initialisation.
@@ -513,7 +669,7 @@ def plot_deflection(xs, bmd, span, E_GPa=200, I_cm4=5000, support_type="simply_s
 
     defl_mm = defl * 1000
 
-    fig, ax = plt.subplots(figsize=(11, 2.8))
+    fig, ax = plt.subplots(figsize=(12, 3.2))
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(SURF)
     ax.fill_between(xs, 0, defl_mm, color="#d2a8ff", alpha=0.35, linewidth=0)
@@ -524,7 +680,7 @@ def plot_deflection(xs, bmd, span, E_GPa=200, I_cm4=5000, support_type="simply_s
     ax.set_ylabel("Deflection (mm)", fontsize=9, color=MUTE)
     ax.set_title("DEFLECTION CURVE (approximate)", fontsize=10, color=TEXT,
                  fontweight="bold", pad=8, loc="left")
-    ax.grid(alpha=0.2, lw=0.5)
+    ax.grid(alpha=0.15, lw=0.4, linestyle=":")
     for spine in ax.spines.values():
         spine.set_edgecolor(BORD)
     idx = np.argmax(np.abs(defl_mm))
@@ -536,8 +692,12 @@ def plot_deflection(xs, bmd, span, E_GPa=200, I_cm4=5000, support_type="simply_s
 
 # ─── SIDEBAR ──────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## ⚙️ Beam Setup")
-    st.markdown("---")
+    st.markdown("""
+    <div style='padding: 20px 0 4px 0;'>
+      <div style='font-size:18px; font-weight:700; color:#e6edf3; font-family: Space Grotesk, sans-serif; letter-spacing:-0.3px;'>⚙️ Beam Setup</div>
+      <div style='height:1px; background: linear-gradient(90deg, rgba(56,139,253,0.5), transparent); margin-top:8px;'></div>
+    </div>
+    """, unsafe_allow_html=True)
 
     span = st.slider("Beam Span (m)", min_value=1.0, max_value=20.0, value=6.0, step=0.5)
 
@@ -552,8 +712,7 @@ with st.sidebar:
     else:  # Fixed
         support_b = st.selectbox("Support B (right end)", ["Free"], index=0, key="sb_fixed")
 
-    st.markdown("---")
-    st.markdown("**Cross-Section**")
+    st.markdown("<div style='height:1px;background:linear-gradient(90deg,rgba(180,198,220,0.15),transparent);margin:12px 0 10px 0;'></div><div class='sidebar-section'>📐 Cross-Section</div>", unsafe_allow_html=True)
     section = st.selectbox("Section Profile", [
         "Rectangle 100×200mm",
         "I-Section (IPE 200)",
@@ -569,11 +728,11 @@ with st.sidebar:
         "Concrete M25 (compression)",
     ])
 
-    E_GPa = st.number_input("E — Elastic Modulus (GPa)", value=200, min_value=1, max_value=400)
-    I_cm4 = st.number_input("I — Moment of Inertia (cm⁴)", value=5000, min_value=10, max_value=500000)
+    with st.expander("⚙️  Advanced Parameters"):
+        E_GPa = st.number_input("E — Elastic Modulus (GPa)", value=200, min_value=1, max_value=400)
+        I_cm4 = st.number_input("I — Moment of Inertia (cm⁴)", value=5000, min_value=10, max_value=500000)
 
-    st.markdown("---")
-    st.markdown("**Distributed Load (UDL)**")
+    st.markdown("<div style='height:1px;background:linear-gradient(90deg,rgba(180,198,220,0.15),transparent);margin:12px 0 10px 0;'></div><div class='sidebar-section'>🌊 Distributed Load (UDL)</div>", unsafe_allow_html=True)
     udl       = st.slider("UDL Intensity (kN/m)", 0.0, 50.0, 0.0, 1.0)
     udl_start = st.slider("UDL Start (m)", 0.0, span, 0.0, 0.5)
     # Allow zero-length UDL (udl_start == udl_end → no load, no crash)
@@ -581,8 +740,7 @@ with st.sidebar:
     udl_end     = st.slider("UDL End (m)", udl_end_min, span, float(span), 0.5)
     udl_arrows  = st.slider("Number of load arrows", 2, 20, 8, 1)
 
-    st.markdown("---")
-    st.markdown("**Point Loads**")
+    st.markdown("<div style='height:1px;background:linear-gradient(90deg,rgba(180,198,220,0.15),transparent);margin:12px 0 10px 0;'></div><div class='sidebar-section'>🎯 Point Loads</div>", unsafe_allow_html=True)
     n_loads = st.number_input("Number of point loads", 0, 6, 1)
 
     # ── Cantilever load-position hint ──────────────────────────────────────
@@ -591,7 +749,7 @@ with st.sidebar:
     is_cantilever_sidebar = (support_a == "Fixed")
     if is_cantilever_sidebar and int(n_loads) > 0:
         st.markdown(
-            "<div style='font-size:11px;color:#e3b341;padding:2px 0 6px 0'>"
+            "<div style='font-size:11px;color:#e3b341;padding:2px 0 6px 0;font-family:JetBrains Mono,monospace;'>"
             "💡 Tip load defaults to the free end (x = span).</div>",
             unsafe_allow_html=True
         )
@@ -616,25 +774,61 @@ with st.sidebar:
             Pi = st.number_input(f"P{i+1} (kN)", 0.1, 500.0, 10.0, step=1.0, key=f"p{i}")
         loads.append((float(xi), float(Pi)))
 
-    st.markdown("---")
-    st.info("Results update live as you change inputs above.", icon="⚡")
+    st.markdown("<div style='height:1px;background:linear-gradient(90deg,rgba(180,198,220,0.15),transparent);margin:12px 0 10px 0;'></div>", unsafe_allow_html=True)
+    st.info("⚡ Results update live as you change inputs above.")
 
 
 # ─── HEADER ───────────────────────────────────────────────────────────────────
 st.markdown("""
-<div style='padding: 32px 0 12px 0; text-align: center;'>
-  <span style='font-size: 38px; font-weight: 700; color: #e6edf3; letter-spacing: -0.5px;'>
-    🏗️ Mech Vision
-  </span><br>
-  <span style='font-size: 16px; color: #8b949e; font-family: DM Mono, monospace; letter-spacing: 0.04em;'>
-    Beam Load &amp; Stress Analyzer — v1.0
-  </span><br><br>
-  <span style='font-size: 13px; color: #3fb950; font-family: DM Mono, monospace; letter-spacing: 0.1em;'>
-    ✦ Made by YOGESH S ✦
-  </span>
+<div style='padding:36px 0 20px 0; text-align:center;'>
+
+  <!-- overline label -->
+  <div style='
+    font-size:12px; letter-spacing:0.32em; text-transform:uppercase;
+    color:rgba(180,198,220,0.5); font-family:DM Mono,monospace;
+    font-weight:500; margin-bottom:16px;
+  '>Structural Engineering Suite</div>
+
+  <!-- editorial title — Cormorant Garamond -->
+  <div style='
+    font-size:72px; font-weight:300;
+    font-family:Cormorant Garamond,serif;
+    color:#dce8f5;
+    line-height:1; letter-spacing:-0.02em;
+    margin-bottom:6px;
+  '>Mech Vision</div>
+
+  <!-- italic descriptor -->
+  <div style='
+    font-size:24px; font-weight:300; font-style:italic;
+    font-family:Cormorant Garamond,serif;
+    color:rgba(180,198,220,0.55);
+    letter-spacing:0.04em; margin-bottom:24px;
+  '>Beam Load &amp; Stress Analyzer</div>
+
+  <!-- thin rule with silver dot -->
+  <div style='
+    display:flex; align-items:center; justify-content:center;
+    gap:14px; margin-bottom:12px;
+  '>
+    <div style='height:1px; width:100px; background:rgba(180,198,220,0.20);'></div>
+    <div style='
+      width:5px; height:5px; border-radius:50%;
+      background:rgba(180,198,220,0.50);
+    '></div>
+    <div style='height:1px; width:100px; background:rgba(180,198,220,0.20);'></div>
+  </div>
+
 </div>
+
+<!-- bottom rule -->
+<div style='
+  height:1px;
+  background:linear-gradient(90deg,
+    transparent, rgba(180,198,220,0.25), transparent);
+  margin-bottom:28px;
+'></div>
 """, unsafe_allow_html=True)
-st.markdown("---")
 
 # ─── Main analysis block ──────────────────────────────────────────────────────
 sup_type = "cantilever" if (support_a == "Fixed" and support_b == "Free") else "simply_supported"
@@ -684,11 +878,14 @@ try:
     with cols[4]:
         if sf >= 2.5:
             badge = f"<span class='safe-badge'>✓ SAFE  SF={sf}</span>"
+            sf_cls = "metric-card-safe"
         elif sf >= 1.5:
             badge = f"<span class='warn-badge'>⚠ MARGINAL  SF={sf}</span>"
+            sf_cls = "metric-card-warn"
         else:
             badge = f"<span class='fail-badge'>✗ FAILURE  SF={sf}</span>"
-        st.markdown(f"""<div class='metric-card'>
+            sf_cls = "metric-card-fail"
+        st.markdown(f"""<div class='metric-card {sf_cls}'>
             <div class='metric-label'>Safety Factor</div>
             <div style='margin-top:6px'>{badge}</div>
             <div class='metric-unit' style='margin-top:4px'>σ = {sigma} MPa</div>
@@ -706,7 +903,7 @@ try:
 
     # ── Diagrams ──────────────────────────────────────────────────────────────
     tab1, tab2, tab3, tab4 = st.tabs(
-        ["📊 Beam & Stress", "⚡ Shear Force", "🌀 Bending Moment", "📉 Deflection"]
+        ["📐  Model", "⚡  Shear Force", "🌀  Bending Moment", "📉  Deflection"]
     )
 
     with tab1:
@@ -826,3 +1023,47 @@ try:
 except Exception as e:
     st.error(f"⚠️ Solver error: {e}")
     st.info("Tip: Make sure point load positions are within the beam span.")
+
+# ─── FOOTER ───────────────────────────────────────────────────────────────────
+st.markdown("""
+<div style='
+  text-align: center;
+  padding: 44px 0 32px 0;
+  margin-top: 36px;
+  border-top: 1px solid rgba(180,198,220,0.07);
+'>
+  <!-- decorative rule above -->
+  <div style='
+    display:flex; align-items:center; justify-content:center;
+    gap:18px; margin-bottom:20px;
+  '>
+    <div style='height:1px; width:60px; background:linear-gradient(90deg,transparent,rgba(180,198,220,0.2));'></div>
+    <span style='color:rgba(180,198,220,0.25); font-size:10px;'>◆</span>
+    <div style='height:1px; width:60px; background:linear-gradient(90deg,rgba(180,198,220,0.2),transparent);'></div>
+  </div>
+
+  <!-- royal author line -->
+  <div style='
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-family: Cinzel Decorative, serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: rgba(190,210,235,0.6);
+  '>
+    <span style='
+      font-size:18px;
+      color:rgba(180,198,220,0.55);
+      line-height:1;
+    '>✦</span>
+    <span>Engineered by Yogesh S</span>
+    <span style='
+      font-size:18px;
+      color:rgba(180,198,220,0.55);
+      line-height:1;
+    '>✦</span>
+  </div>
+</div>
+""", unsafe_allow_html=True)

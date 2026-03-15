@@ -7,7 +7,7 @@ import pandas as pd
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="MECH VISION — Beam Stress Analyzer",
+    page_title="StructSolve — Beam Stress Analyzer",
     page_icon="🏗️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -761,31 +761,67 @@ try:
 
     # ── Engineering summary ───────────────────────────────────────────────────
     with st.expander("📝 Engineering Summary"):
-        fy_val      = FY_MAP.get(material, 250)
+        fy_val       = FY_MAP.get(material, 250)
         defl_lim_val = (span * 1000) / (180 if is_cantilever else 250)
         defl_lim_lbl = "L/180 (cantilever)" if is_cantilever else "L/250"
-        defl_status = "PASS ✅" if abs(defl_max) <= defl_lim_val else "FAIL ❌"
-        concrete_note = "\n> ⚠️ *Plain concrete cannot resist bending tension. Safety factor is indicative only — not valid for unreinforced concrete design.*" if "Concrete" in material else ""
-        st.markdown(f"""
-| Parameter | Value |
-|---|---|
-| Beam Span | {span} m |
-| Support Configuration | {support_a} – {support_b} |
-| Total Applied Load | {total_load:.2f} kN |
-| Support A (Reaction) | {res['Ra']:.2f} kN |
-| Support B (Reaction) | {res['Rb']:.2f} kN |
-| Max Shear Force | {res['max_sfd']:.2f} kN |
-| Max Bending Moment | {res['max_bmd']:.2f} kN·m |
-| Max Bending Stress | {sigma} MPa |
-| Material Yield Strength | {fy_val} MPa |
-| Safety Factor | {sf} |
-| Max Deflection | {abs(defl_max):.2f} mm |
-| Deflection Limit ({defl_lim_lbl}) | {defl_lim_val:.1f} mm |
-| Deflection Check | {defl_status} |
-| Section | {section} |
-| Material | {material} |
-{concrete_note}
-""")
+        defl_status  = "PASS" if abs(defl_max) <= defl_lim_val else "FAIL"
+        concrete_note = "\n\n> ⚠️ *Plain concrete cannot resist bending tension. Safety factor is indicative only — not valid for unreinforced concrete design.*" if "Concrete" in material else ""
+
+        # Build as DataFrame — shared by display table and CSV download
+        summary_df = pd.DataFrame({
+            "Parameter": [
+                "Beam Span",
+                "Support Configuration",
+                "Total Applied Load",
+                "Support A (Reaction)",
+                "Support B (Reaction)",
+                "Max Shear Force",
+                "Max Bending Moment",
+                "Max Bending Stress",
+                "Material Yield Strength",
+                "Safety Factor",
+                "Safety Status",
+                "Max Deflection",
+                f"Deflection Limit ({defl_lim_lbl})",
+                "Deflection Check",
+                "Section Profile",
+                "Material",
+            ],
+            "Value": [
+                f"{span} m",
+                f"{support_a} – {support_b}",
+                f"{total_load:.2f} kN",
+                f"{res['Ra']:.2f} kN",
+                f"{res['Rb']:.2f} kN",
+                f"{res['max_sfd']:.2f} kN",
+                f"{res['max_bmd']:.2f} kN·m",
+                f"{sigma} MPa",
+                f"{fy_val} MPa",
+                str(sf),
+                "SAFE" if sf >= 2.5 else ("MARGINAL" if sf >= 1.5 else "FAILURE"),
+                f"{abs(defl_max):.2f} mm",
+                f"{defl_lim_val:.1f} mm",
+                defl_status,
+                section,
+                material,
+            ]
+        })
+
+        st.dataframe(summary_df, use_container_width=True, hide_index=True)
+        if concrete_note:
+            st.warning("Plain concrete cannot resist bending tension. Safety factor is indicative only — not valid for unreinforced concrete design.")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # ── Download button ───────────────────────────────────────────────
+        csv_bytes = summary_df.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            label="⬇️ Download Engineering Summary (CSV)",
+            data=csv_bytes,
+            file_name="mech_vision_summary.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
 
 except Exception as e:
     st.error(f"⚠️ Solver error: {e}")
